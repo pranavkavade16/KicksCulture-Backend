@@ -165,12 +165,18 @@ const addSneakerInWishlist = async (userId, sneakerId) => {
     const exists = await Wishlist.findOne({ userId, sneakerId });
 
     if (exists) {
-      return console.log('Sneaker already exists in the wishlist');
+      return {
+        existed: true,
+        data: exists
+      };
     }
 
     const sneakerInWishlist = new Wishlist({ userId, sneakerId });
     const savedSneaker = await sneakerInWishlist.save();
-    return savedSneaker;
+    return  {
+      existed: false,
+      data: savedSneaker
+    };;
   } catch (error) {
     throw error;
   }
@@ -180,11 +186,15 @@ app.post('/sneakers/wishlist', async (req, res) => {
   try {
     const { userId, sneakerId } = req.body;
     const sneakerInWishlist = await addSneakerInWishlist(userId, sneakerId);
-    if (sneakerInWishlist) {
-      res
-        .status(200)
-        .json({ message: 'Sneaker added to the wishlist successfully.' });
+
+    if (sneakerInWishlist.existed) {
+      return res.status(200).json({ message: 'Sneaker already in wishlist.', data: sneakerInWishlist.data });
     }
+  
+     return res
+        .status(200)
+        .json({ message: 'Sneaker added to the wishlist successfully.', newSneaker: sneakerInWishlist.data });
+    
   } catch (error) {
     res
       .status(500)
