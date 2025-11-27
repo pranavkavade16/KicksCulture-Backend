@@ -288,13 +288,13 @@ app.post('/sneakers/cart/:sneakerId', async (req, res) => {
 });
 
 // API to delete a sneaker from cart
-app.delete('/sneakers/cart/delete/:sneakerId', async (req, res) =>{
+app.delete('/sneakers/cart/delete/:cartId', async (req, res) =>{
     try {
         
        const { quantity } = req.body;
 
     if (quantity === 1) {
-      const deleted = await Cart.findByIdAndDelete(req.params.sneakerId);
+      const deleted = await Cart.findByIdAndDelete(req.params.cartId);
 
       if (!deleted) {res.status(404).json({ error: "Sneaker not found." });}
 
