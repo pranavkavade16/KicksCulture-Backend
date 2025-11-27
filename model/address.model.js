@@ -6,10 +6,10 @@ const addressSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    flatNo: {
+    flatNumber: {
       type: String,
     },
-    address: {
+    completeAddress: {
       type: String,
       required: true,
     },
