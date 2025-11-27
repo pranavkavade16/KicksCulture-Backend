@@ -6,8 +6,10 @@ const Sneakers = require('./model/sneakers.model');
 const Profile = require('./model/profile.model');
 const Cart = require('./model/cart.model');
 const Wishlist = require('./model/wishlist.model');
+const Address = require('./model/address.model');
 
 const cors = require('cors');
+
 
 const corsOptions = {
   origin: '*',
@@ -360,6 +362,55 @@ app.get('/profile', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch the data', error });
   }
 });
+
+// API to add a new address
+const addNewAddress = async (address) => {
+  try {
+    const newAddress = new Address(address);
+    const savedAddress = await newAddress.save();
+    return savedAddress;
+  } catch (error) {
+    throw error;
+  }
+}
+
+app.post("/address", async(req, res) => {
+  try {
+    const newAddress = await addNewAddress(req.body);
+
+    if(newAddress){
+      res.status(200).json({ message: "Address added successfully", newAddress });
+    } else {
+      res.status(500).json({ error: "Error adding the address" }); 
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Error adding the address", error });
+  }
+})
+
+// API to read all addresses
+const readAllAddresses = async () => {
+  try {
+    const addAddresses = await Address.find();
+    return addAddresses;
+  } catch (error) {
+    throw error;
+  }
+};
+
+app.get("/address", async(req, res) => {
+  try {
+    const addAddresses = await readAllAddresses();
+
+    if(addAddresses.length != 0){
+      res.send(addAddresses);
+    } else {
+      res.status(404).json({ error: "No address found." });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch the data.", error });
+  }
+})
 
 const PORT = 3000;
 app.listen(PORT, () => {

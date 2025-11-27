@@ -14,10 +14,6 @@ const profileSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    DOB: {
-      type: Date,
-      required: true,
-    },
     mobileNumber: {
       type: String,
       required: true,
