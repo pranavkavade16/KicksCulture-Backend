@@ -291,9 +291,6 @@ app.post('/sneakers/cart/:sneakerId', async (req, res) => {
 app.delete('/sneakers/cart/delete/:cartId', async (req, res) =>{
     try {
         
-       const { quantity } = req.body;
-
-    if (quantity === 1) {
       const deleted = await Cart.findByIdAndDelete(req.params.cartId);
 
       if (!deleted) {res.status(404).json({ error: "Sneaker not found." });}
@@ -302,7 +299,7 @@ app.delete('/sneakers/cart/delete/:cartId', async (req, res) =>{
         _id: deleted._id,
         deleted: true
       })
-    }  
+    
     } catch (error) {
         res.status(500).json({ error: 'Error deleting the sneaker from cart.', error });
     }
