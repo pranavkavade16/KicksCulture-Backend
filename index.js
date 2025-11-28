@@ -227,6 +227,32 @@ app.get('/sneakers/wishlist', async (req, res) => {
   }
 });
 
+// API to delete sneaker from wishlist 
+const deleteSneakerFromWishlist = async () => {
+  try {
+    const deletedSneaker = await Wishlist.findByIdAndDelete(wishlistedId);
+    return deletedSneaker;
+  } catch (error) {
+    throw error;
+  }
+}
+
+app.delete('/sneakers/wishlist/delete/:wishlistedId', async (req, res) => {
+  try {
+    const deletedSneaker = await deleteSneakerFromWishlist(req.params.wishlistedId);  
+    if(deletedSneaker){
+      res.status(200).json({
+        _id: deletedSneaker._id,
+        deleted: true
+      })
+    } else {
+      res.status(404).json({ error: "Sneaker not found." });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Error deleting the sneaker from wishlist.", error });
+  } 
+screenTop});
+
 //API to read the sneakers by their brandname
 const readSneakersByBrand = async (brandName) => {
   try {
