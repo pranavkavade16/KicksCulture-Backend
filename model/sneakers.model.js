@@ -51,7 +51,7 @@ const sneakersSchema = new mongoose.Schema(
       max: 5,
       required: true,
     },
-    isReturnAvaiable: {
+    isReturnAvailable: {
       type: Boolean,
       required: true,
     },
@@ -59,7 +59,7 @@ const sneakersSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    isPayOnDeliveryAvialble: {
+    isPayOnDeliveryAvailable: {
       type: Boolean,
       required: true,
     },
