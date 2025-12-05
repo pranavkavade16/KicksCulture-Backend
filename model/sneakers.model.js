@@ -16,7 +16,7 @@ const sneakersSchema = new mongoose.Schema(
         "Puma",
         "Converse",
         "Asics",
-        "Converse",
+        "Reebok",
       ],
       required: true,
     },
@@ -41,10 +41,10 @@ const sneakersSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    size: {
+    sizeAvailable: [{
       type: Number,
       required: true,
-    },
+    }],
     rating: {
       type: Number,
       min: 1,
