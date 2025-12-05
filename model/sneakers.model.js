@@ -78,6 +78,12 @@ const sneakersSchema = new mongoose.Schema(
     image2Url: {
       type: String,
     },
+    image3Url: {
+      type: String,
+    },
+    image4Url: {
+      type: String, 
+    },
     description: {
       type: String,
       required: true,
