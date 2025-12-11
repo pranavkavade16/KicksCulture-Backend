@@ -6,19 +6,11 @@ const orderSchema = new mongoose.Schema({
         ref: 'Profile',
         required: true,
     }, 
-    sneakerId: {
+    items: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Sneakers',
+        ref: 'Cart',
         required: true,
     },  
-    quantity: {
-        type: Number,
-        required: true,
-    },
-    size: {
-        type: Number,   
-        required: true,
-    },
     addressId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Address', 
