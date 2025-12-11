@@ -499,7 +499,7 @@ app.get("/sneakers/order", async(req, res) => {
     const allOrder = await readAllOrders();
 
    if (allOrder && allOrder.length > 0) {
-      return res.status(200).json(allOrder);
+      res.send(allOrder);
     }
       res.status(404).json({ error: 'No orders available.' });
     
