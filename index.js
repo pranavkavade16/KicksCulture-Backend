@@ -498,11 +498,10 @@ app.get("/sneakers/order", async(req, res) => {
   try {
     const allOrder = await readAllOrders();
 
-    if(allOrder.length != 0){
-      res.send(allOrder);
-    } else {
-      res.status(404).json({ error: "No orders found." });
-    }
+    if(allOrder.length === 0){
+      res.status(404).json({ message: "No orders found." });
+    } 
+    res.send(allOrder);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch the data.", error });
   }
