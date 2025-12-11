@@ -488,6 +488,7 @@ app.post("/sneakers/order", async(req, res) => {
 const readAllOrders = async() => {
   try{
     const allOrders = await Order.find().populate("userId").populate("addressId").populate("items.sneakerId");
+    console.log(allOrders);
     return allOrders;
   }catch(error){
     throw error;
@@ -505,7 +506,8 @@ app.get("/sneakers/order", async(req, res) => {
     res.status(500).json({error: "Failed to fetch the data", error})
   }
 })
+
 const PORT = 3000;
-app.listen(PORT, () => {s
+app.listen(PORT, () => {
   console.log('Server is running on the PORT:', PORT);
 });
