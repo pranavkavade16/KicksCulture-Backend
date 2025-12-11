@@ -485,28 +485,26 @@ app.post("/sneakers/order", async(req, res) => {
 })
 
 // API to read all orders
-const readAllOrders = async () => {
-  try { 
-    const allOrder = await Order.find().populate('userId').populate('items.sneakerId').populate('addressId');
-    return allOrder;
-  } catch(error){
+const readAllOrders = async() => {
+  try{
+    const allOrders = await Order.find().populate("userId").populate("addressId").populate("items.sneakerId");
+    return allOrders;
+  }catch(error){
     throw error;
   }
-};
-
+}
 app.get("/sneakers/order", async(req, res) => {
   try {
-    const allOrder = await readAllOrders();
-
-   if (allOrder && allOrder.length > 0) {
-      res.send(allOrder);
+    const allOrders = await readAllOrders();
+    if(allOrders.length > 0) {
+      res.send(allOrders)
+    } else {
+      res.status(404).json({error: "No orders found"})
     }
-      res.status(404).json({ error: 'No orders available.' });
-    
-  } catch (error) {
-    res.status(500).json({ message: "Failed to fetch the data.", error });
+  }catch(error){
+    res.status(500).json({error: "Failed to fetch the data", error})
   }
-} );
+})
 const PORT = 3000;
 app.listen(PORT, () => {s
   console.log('Server is running on the PORT:', PORT);
