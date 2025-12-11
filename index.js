@@ -7,6 +7,7 @@ const Profile = require('./model/profile.model');
 const Cart = require('./model/cart.model');
 const Wishlist = require('./model/wishlist.model');
 const Address = require('./model/address.model');
+const Order = require('./model/order.model');
 
 const cors = require('cors');
 
@@ -251,7 +252,7 @@ app.delete('/sneakers/wishlist/delete/:wishlistedId', async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Error deleting the sneaker from wishlist.", error });
   } 
-screenTop});
+});
 
 //API to read the sneakers by their brandname
 const readSneakersByBrand = async (brandName) => {
@@ -438,7 +439,77 @@ app.get("/address", async(req, res) => {
   }
 })
 
+//api to delete the address
+const deleteAddressById = async (address) => {
+  try {
+    const deleteAddress = await Address.findByIdAndDelete(address);
+    return deleteAddress;
+  }catch(error){
+    throw error;
+  }
+};
+
+app.delete("/address/delete/:addressId", async (req, res) => {
+  try{
+    const deletedAddress = await deleteAddressById(req.params.addressId);
+    if(deletedAddress){
+      res.status(200).json({message: "Address deleted successfully", deletedAddress });
+    } else {
+      res.status(404).json({error: "Address not found."})
+    }
+  } catch(error){
+    res.status(500).json({error: "Error deleting the address.", error})
+  }
+})
+
+// API to place a order 
+const placeOrder = async (orderDetails) => {
+  try{
+    const order = new Order(orderDetails);
+    const savedOrder = await order.save();
+    return savedOrder;
+  }catch(error){
+
+  }
+}
+
+app.post("/sneaker/order", async(req, res) => {
+  try{
+    const newOrder = await placeOrder(req.body);
+    if(newOrder){
+      res.status(200).json({ message: "Order placed successfully", newOrder });
+    } else {
+      res.status(500).json({ error: "Error placing the order." }); 
+    }
+  }catch(error){
+    res.status(500).json({error: "Error placing the order.", error})
+  }
+})
+
+// API to read all orders
+const readAllOrders = async () => {
+  try { 
+    const allOrder = await Order.find().populate('sneakerId').populate('addressId').populate('userId');
+    return allOrder;
+  } catch(error){
+    throw error;
+  }
+};
+
+app.get("/sneaker/order", async(req, res) => {
+  try {
+    const allOrder = await readAllOrders();
+
+    if(allOrder.length != 0){
+      res.send(allOrder);
+    } else {
+      res.status(404).json({ error: "No orders found." });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch the data.", error });
+  }
+} );
 const PORT = 3000;
-app.listen(PORT, () => {
+app.listen(PORT, () => {s
   console.log('Server is running on the PORT:', PORT);
 });
