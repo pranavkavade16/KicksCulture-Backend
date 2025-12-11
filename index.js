@@ -494,7 +494,7 @@ const readAllOrders = async() => {
     throw error;
   }
 }
-app.get("/sneakers/order", async(req, res) => {
+app.get("/order", async(req, res) => {
   try {
     const allOrders = await readAllOrders();
     if(allOrders.length != 0) {
