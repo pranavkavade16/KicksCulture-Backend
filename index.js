@@ -469,7 +469,7 @@ const placeOrder = async (orderDetails) => {
     const savedOrder = await order.save();
     return savedOrder;
   }catch(error){
-
+    throw error;
   }
 }
 
@@ -478,9 +478,7 @@ app.post("/sneakers/order", async(req, res) => {
     const newOrder = await placeOrder(req.body);
     if(newOrder){
       res.status(200).json({ message: "Order placed successfully", newOrder });
-    } else {
-      res.status(500).json({ error: "Error placing the order." }); 
-    }
+    } 
   }catch(error){
     res.status(500).json({error: "Error placing the order.", error})
   }
