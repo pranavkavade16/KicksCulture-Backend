@@ -497,7 +497,7 @@ const readAllOrders = async() => {
 app.get("/sneakers/order", async(req, res) => {
   try {
     const allOrders = await readAllOrders();
-    if(allOrders.length > 0) {
+    if(allOrders.length != 0) {
       res.send(allOrders)
     } else {
       res.status(404).json({error: "No orders found"})
