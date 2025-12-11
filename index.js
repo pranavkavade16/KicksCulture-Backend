@@ -473,7 +473,7 @@ const placeOrder = async (orderDetails) => {
   }
 }
 
-app.post("/sneaker/order", async(req, res) => {
+app.post("/sneakers/order", async(req, res) => {
   try{
     const newOrder = await placeOrder(req.body);
     if(newOrder){
@@ -496,7 +496,7 @@ const readAllOrders = async () => {
   }
 };
 
-app.get("/sneaker/order", async(req, res) => {
+app.get("/sneakers/order", async(req, res) => {
   try {
     const allOrder = await readAllOrders();
 
