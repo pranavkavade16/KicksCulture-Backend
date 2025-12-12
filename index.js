@@ -355,7 +355,7 @@ const emptyCart = async (userId) => {
 }
 app.delete("/sneakers/cart/empty/:userId", async (req, res) => {
   try{
-    const {userId} = req.body.userId;
+    const userId = req.body.userId;
 
     const deleteAll = await emptyCart(userId)
 
