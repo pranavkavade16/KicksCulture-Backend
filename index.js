@@ -344,6 +344,32 @@ app.delete('/sneakers/cart/delete/:cartId', async (req, res) =>{
     }
 })
 
+// API to empty the cart
+const emptyCart = async (userId) => {
+  try{
+    const deleteAll = await Cart.deleteMany({userId})
+    return deleteAll;
+  } catch(error){
+    throw error;
+  }
+}
+app.delete("/sneakers/cart/empty", async (req, res) => {
+  try{
+    const {userId} = req.body.userId;
+
+    const deleteAll = await emptyCart(userId)
+
+    if(deleteAll){
+      res.status(200).json({message: "Deleted all sneakers from the cart."})
+    } else {
+      res.status(404).json({error: "No sneakers found in the cart."})
+    }
+
+  } catch(error){
+    res.status(500).json({error: "Error deleting the sneakers from the cart", error})
+  }
+})
+
 // API to decrement the sneakers quantity
 app.post("/sneakers/cart/decrement/:sneakerId", async (req, res) => {
     try {
