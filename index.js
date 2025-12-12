@@ -353,7 +353,7 @@ const emptyCart = async (userId) => {
     throw error;
   }
 }
-app.delete("/sneakers/cart/empty", async (req, res) => {
+app.delete("/sneakers/cart/empty/:userId", async (req, res) => {
   try{
     const {userId} = req.body.userId;
 
