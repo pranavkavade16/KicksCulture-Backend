@@ -356,7 +356,7 @@ const emptyCart = async (userId) => {
 app.delete("/sneakers/cart/empty/:userId", async (req, res) => {
   try{
 
-    const deleteAll = await emptyCart(res.params.userId);
+    const deleteAll = await emptyCart(req.params.userId);
 
     if(deleteAll){
       res.status(200).json({message: "Deleted all sneakers from the cart."})
