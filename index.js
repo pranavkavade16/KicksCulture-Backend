@@ -347,7 +347,7 @@ app.delete('/sneakers/cart/delete/:cartId', async (req, res) =>{
 // API to empty the cart
 const emptyCart = async (userId) => {
   try{
-    const deleteAll = await Cart.deleteMany({ userId: new mongoose.Types.ObjectId(userId) })
+    const deleteAll = await Cart.deleteMany({ userId })
     return deleteAll;
   } catch(error){
     throw error;
