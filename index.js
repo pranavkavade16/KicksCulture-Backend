@@ -465,9 +465,9 @@ app.get("/address", async(req, res) => {
 })
 
 //api to delete the address
-const deleteAddressById = async (address) => {
+const deleteAddressById = async (addressId) => {
   try {
-    const deleteAddress = await Address.findByIdAndDelete(address);
+    const deleteAddress = await Address.findByIdAndDelete(addressId);
     return deleteAddress;
   }catch(error){
     throw error;
