@@ -104,7 +104,7 @@ app.get('/sneakers/newArrival', async (req, res) => {
 // API to add sneakers to cart
 const addSneakerToCart = async (userId, sneakerId, quantity, size) => {
   try {
-    const exists = await Cart.findOne({ userId, sneakerId });
+    const exists = await Cart.findOne({ userId, sneakerId, size });
 
     if (exists) {
       return { message: 'Sneaker already in cart', data: exists };
