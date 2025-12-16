@@ -465,11 +465,11 @@ app.get("/address", async(req, res) => {
 })
 
 // api to edit the address 
-app.post("/address/edit/:addressId", async(req, res) => {
+app.patch("/address/edit/:addressId", async(req, res) => {
     const addressId = parseInt(req.params.addressId);
     const updatedAddress = req.body;
 
-    const addressToUpdate = await Address.findById((address) => address._id === addressId);
+    const addressToUpdate = await Address.find((address) => address._id === addressId);
 
     if(!addressToUpdate){
       return res.status(404).json({ error: "Address not found." });
