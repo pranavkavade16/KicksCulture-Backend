@@ -554,7 +554,7 @@ app.post("/sneakers/order", async(req, res) => {
 // API to read all orders
 const readAllOrders = async() => {
   try{
-    const allOrders = await Order.find().populate("userId").populate("addressId").populate("items.sneakerId");
+    const allOrders = await Order.find().populate("userId").populate("addressId").populate("items.sneakerId").sort({ createdAt: 1 });;
     console.log(allOrders);
     return allOrders;
   }catch(error){
