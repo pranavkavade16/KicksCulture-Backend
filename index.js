@@ -466,7 +466,7 @@ app.get("/address", async(req, res) => {
 
 // api to edit the address 
 app.patch("/address/edit/:addressId", async(req, res) => {
-    const addressId = parseInt(req.params.addressId);
+    const addressId = req.params.addressId;
     const updatedAddress = req.body;
 
     const addressToUpdate = await Address.find((address) => address._id === addressId);
