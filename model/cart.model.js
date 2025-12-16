@@ -26,5 +26,10 @@ const cartSchema = new mongoose.Schema(
   }
 );
 
+cartSchema.index(
+  { userId: 1, sneakerId: 1, size: 1 },
+  { unique: true }
+);
+
 const Cart = mongoose.model('Cart', cartSchema);
 module.exports = Cart;
