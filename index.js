@@ -302,7 +302,7 @@ app.post('/profile', async (req, res) => {
 });
 
 // API to increment the sneakers quantity
-app.post('/sneakers/cart/:sneakerId', async (req, res) => {
+app.post('/sneakers/cart/:cartItemId', async (req, res) => {
   try {
     const { quantity } = req.body;
 
@@ -311,7 +311,7 @@ app.post('/sneakers/cart/:sneakerId', async (req, res) => {
     }
 
     const updatedQuantity = await Cart.findByIdAndUpdate(
-      req.params.sneakerId,
+      req.params.cartItemId,
       { quantity: req.body.quantity },
       { new: true }
     ).populate('sneakerId');
