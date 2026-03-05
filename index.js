@@ -8,6 +8,7 @@ const Cart = require('./model/cart.model');
 const Wishlist = require('./model/wishlist.model');
 const Address = require('./model/address.model');
 const Order = require('./model/order.model');
+const { chatbotRoute } = require('./chatbotRoute');
 
 const cors = require('cors');
 
@@ -29,6 +30,8 @@ app.get('/', (req, res) => {
 });
 
 // API to add the data.
+
+chatbotRoute(app);
 
 const addNewSneaker = async (sneaker) => {
   try {
