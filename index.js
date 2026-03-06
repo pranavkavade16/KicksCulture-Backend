@@ -31,7 +31,7 @@ app.get('/', (req, res) => {
 
 // API to add the data.
 
-chatbotRoute(app);
+// chatbotRoute(app);
 
 const addNewSneaker = async (sneaker) => {
   try {
