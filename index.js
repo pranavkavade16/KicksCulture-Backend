@@ -1,20 +1,19 @@
-const express = require('express');
+const express = require("express");
 const app = express();
 
-const { initializeDatabase } = require('./db/db.connect');
-const Sneakers = require('./model/sneakers.model');
-const Profile = require('./model/profile.model');
-const Cart = require('./model/cart.model');
-const Wishlist = require('./model/wishlist.model');
-const Address = require('./model/address.model');
-const Order = require('./model/order.model');
-const chatbotRoute  = require('./chatbotRoute');
+const { initializeDatabase } = require("./db/db.connect");
+const Sneakers = require("./model/sneakers.model");
+const Profile = require("./model/profile.model");
+const Cart = require("./model/cart.model");
+const Wishlist = require("./model/wishlist.model");
+const Address = require("./model/address.model");
+const Order = require("./model/order.model");
+const chatbotRoute = require("./chatbotRoute");
 
-const cors = require('cors');
-
+const cors = require("cors");
 
 const corsOptions = {
-  origin: '*',
+  origin: "*",
   credentials: true,
   optionSuccessStatus: 200,
 };
@@ -25,23 +24,13 @@ app.use(express.json());
 
 initializeDatabase();
 
-app.get('/', (req, res) => {
-  res.send('Sneakers API');
+app.get("/", (req, res) => {
+  res.send("Sneakers API");
 });
 
 // API to add the data.
 
-function chatbotRoute(app) {
-  app.post("/chatbot", async (req, res) => {
-    try {
-      const response = await axios.post(API_URL, {...});
-      res.json(response.data);
-    } catch (error) {
-      console.error("Chatbot error:", error);
-      res.status(500).json({ error: "Chatbot failed" });
-    }
-  });
-}
+chatbotRoute(app);
 
 const addNewSneaker = async (sneaker) => {
   try {
@@ -53,17 +42,17 @@ const addNewSneaker = async (sneaker) => {
   }
 };
 
-app.post('/sneakers', async (req, res) => {
+app.post("/sneakers", async (req, res) => {
   try {
     const newSneaker = await addNewSneaker(req.body);
 
     if (newSneaker) {
       res
         .status(200)
-        .json({ message: 'Sneaker added successfully', newSneaker });
+        .json({ message: "Sneaker added successfully", newSneaker });
     }
   } catch (error) {
-    res.status(500).json({ error: 'Error to add the data', error });
+    res.status(500).json({ error: "Error to add the data", error });
   }
 });
 
@@ -77,17 +66,17 @@ const readAllSneakers = async () => {
   }
 };
 
-app.get('/sneakers', async (req, res) => {
+app.get("/sneakers", async (req, res) => {
   try {
     const sneakers = await readAllSneakers();
 
     if (sneakers.length != 0) {
       res.send(sneakers);
     } else {
-      res.status(404).json({ error: 'No Sneaker found' });
+      res.status(404).json({ error: "No Sneaker found" });
     }
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch the data.', error });
+    res.status(500).json({ error: "Failed to fetch the data.", error });
   }
 });
 
@@ -101,16 +90,16 @@ const readSneakersByNewArrival = async () => {
   }
 };
 
-app.get('/sneakers/newArrival', async (req, res) => {
+app.get("/sneakers/newArrival", async (req, res) => {
   try {
     const sneakers = await readSneakersByNewArrival();
     if (sneakers.length != 0) {
       res.send(sneakers);
     } else {
-      res.status(404).json({ error: 'No sneakers found.' });
+      res.status(404).json({ error: "No sneakers found." });
     }
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching the data', error });
+    res.status(500).json({ error: "Error fetching the data", error });
   }
 });
 
@@ -120,7 +109,7 @@ const addSneakerToCart = async (userId, sneakerId, quantity, size) => {
     const exists = await Cart.findOne({ userId, sneakerId, size });
 
     if (exists) {
-      return { message: 'Sneaker already in cart', data: exists };
+      return { message: "Sneaker already in cart", data: exists };
     }
 
     const newSneakerInCart = new Cart({ userId, sneakerId, quantity, size });
@@ -131,7 +120,7 @@ const addSneakerToCart = async (userId, sneakerId, quantity, size) => {
   }
 };
 
-app.post('/sneakers/cart', async (req, res) => {
+app.post("/sneakers/cart", async (req, res) => {
   try {
     const { userId, sneakerId, quantity, size } = req.body;
 
@@ -139,39 +128,39 @@ app.post('/sneakers/cart', async (req, res) => {
       userId,
       sneakerId,
       quantity,
-      size
+      size,
     );
     if (newSneaker) {
       res
         .status(200)
-        .json({ message: 'Sneaker added to cart successfully.', newSneaker });
+        .json({ message: "Sneaker added to cart successfully.", newSneaker });
     }
   } catch (error) {
-    res.status(500).json({ error: 'Error adding the sneaker to cart.' });
+    res.status(500).json({ error: "Error adding the sneaker to cart." });
   }
 });
 
 // API to read all the sneakers from cart
 const readSneakersInCart = async () => {
   try {
-    const sneakerInCart = await Cart.find().populate('sneakerId');
+    const sneakerInCart = await Cart.find().populate("sneakerId");
     return sneakerInCart;
   } catch (error) {
     throw error;
   }
 };
 
-app.get('/sneakers/cart', async (req, res) => {
-  console.log('Cart Check');
+app.get("/sneakers/cart", async (req, res) => {
+  console.log("Cart Check");
   try {
     const sneakerInCart = await readSneakersInCart();
     if (sneakerInCart.length != 0) {
       res.send(sneakerInCart);
     } else {
-      res.status(404).json({ error: 'No sneakers in the cart.' });
+      res.status(404).json({ error: "No sneakers in the cart." });
     }
   } catch (error) {
-    res.status(500).json({ error: 'Error in fetching the data.', error });
+    res.status(500).json({ error: "Error in fetching the data.", error });
   }
 });
 
@@ -183,65 +172,72 @@ const addSneakerInWishlist = async (userId, sneakerId) => {
     if (exists) {
       return {
         existed: true,
-        data: exists
+        data: exists,
       };
     }
 
     const sneakerInWishlist = new Wishlist({ userId, sneakerId });
     const savedSneaker = await sneakerInWishlist.save();
-    return  {
+    return {
       existed: false,
-      data: savedSneaker
-    };;
+      data: savedSneaker,
+    };
   } catch (error) {
     throw error;
   }
 };
 
-app.post('/sneakers/wishlist', async (req, res) => {
+app.post("/sneakers/wishlist", async (req, res) => {
   try {
     const { userId, sneakerId } = req.body;
     const sneakerInWishlist = await addSneakerInWishlist(userId, sneakerId);
 
     if (sneakerInWishlist.existed) {
-      return res.status(200).json({ message: 'Sneaker already in wishlist.', data: sneakerInWishlist.data });
-    }
-  
-     return res
+      return res
         .status(200)
-        .json({ message: 'Sneaker added to the wishlist successfully.', newSneaker: sneakerInWishlist.data });
-    
+        .json({
+          message: "Sneaker already in wishlist.",
+          data: sneakerInWishlist.data,
+        });
+    }
+
+    return res
+      .status(200)
+      .json({
+        message: "Sneaker added to the wishlist successfully.",
+        newSneaker: sneakerInWishlist.data,
+      });
   } catch (error) {
     res
       .status(500)
-      .json({ error: 'Error in adding the sneaker to wishlist', error });
+      .json({ error: "Error in adding the sneaker to wishlist", error });
   }
 });
 
 // API to read all wishlisted sneakers
 const readWishlistedSneakers = async () => {
   try {
-    const wishlistedSneakers = await Wishlist.find().populate('sneakerId');
+    const wishlistedSneakers = await Wishlist.find().populate("sneakerId");
     return wishlistedSneakers;
   } catch (error) {
     throw error;
   }
 };
 
-app.get('/sneakers/wishlist', async (req, res) => {
+app.get("/sneakers/wishlist", async (req, res) => {
   try {
     const wishlistedSneakers = await readWishlistedSneakers();
     if (wishlistedSneakers.length != 0) {
       res.send(wishlistedSneakers);
     } else {
-      res.status(404).json({ error: 'No sneakers available.' });
+      res.status(404).json({ error: "No sneakers available." });
     }
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch the data.' });
+    res.status(500).json({ error: "Failed to fetch the data." });
   }
 });
 
-// API to delete sneaker from wishlist 
+// API to delete sneaker from wishlist
 const deleteSneakerFromWishlist = async (wishlistedId) => {
   try {
     const deletedSneaker = await Wishlist.findByIdAndDelete(wishlistedId);
@@ -249,22 +245,26 @@ const deleteSneakerFromWishlist = async (wishlistedId) => {
   } catch (error) {
     throw error;
   }
-}
+};
 
-app.delete('/sneakers/wishlist/delete/:wishlistedId', async (req, res) => {
+app.delete("/sneakers/wishlist/delete/:wishlistedId", async (req, res) => {
   try {
-    const deletedSneaker = await deleteSneakerFromWishlist(req.params.wishlistedId);  
-    if(deletedSneaker){
+    const deletedSneaker = await deleteSneakerFromWishlist(
+      req.params.wishlistedId,
+    );
+    if (deletedSneaker) {
       res.status(200).json({
         _id: deletedSneaker._id,
-        deleted: true
-      })
+        deleted: true,
+      });
     } else {
       res.status(404).json({ error: "Sneaker not found." });
     }
   } catch (error) {
-    res.status(500).json({ error: "Error deleting the sneaker from wishlist.", error });
-  } 
+    res
+      .status(500)
+      .json({ error: "Error deleting the sneaker from wishlist.", error });
+  }
 });
 
 //API to read the sneakers by their brandname
@@ -277,16 +277,16 @@ const readSneakersByBrand = async (brandName) => {
   }
 };
 
-app.get('/sneakers/:brandName', async (req, res) => {
+app.get("/sneakers/:brandName", async (req, res) => {
   try {
     const sneakers = await readSneakersByBrand(req.params.brandName);
     if (sneakers) {
       res.send(sneakers);
     } else {
-      res.status(404).json({ error: 'Sneaker not found.' });
+      res.status(404).json({ error: "Sneaker not found." });
     }
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching the data.', error });
+    res.status(500).json({ error: "Error fetching the data.", error });
   }
 });
 
@@ -301,109 +301,109 @@ const addProfile = async (profile) => {
   }
 };
 
-app.post('/profile', async (req, res) => {
+app.post("/profile", async (req, res) => {
   try {
     const newProfile = await addProfile(req.body);
     if (newProfile) {
       res
         .status(200)
-        .json({ message: 'Prfile added successfully', newProfile });
+        .json({ message: "Prfile added successfully", newProfile });
     }
   } catch (error) {
-    res.status(500).json({ error: 'Failed to add the profile.', error });
+    res.status(500).json({ error: "Failed to add the profile.", error });
   }
 });
 
 // API to increment the sneakers quantity
-app.post('/sneakers/cart/:cartItemId', async (req, res) => {
+app.post("/sneakers/cart/:cartItemId", async (req, res) => {
   try {
     const { quantity } = req.body;
 
     if (!quantity || quantity < 1) {
-      res.status(400).json({ error: 'Quantity should be atleast 1.' });
+      res.status(400).json({ error: "Quantity should be atleast 1." });
     }
 
     const updatedQuantity = await Cart.findByIdAndUpdate(
       req.params.cartItemId,
       { quantity: req.body.quantity },
-      { new: true }
-    ).populate('sneakerId');
+      { new: true },
+    ).populate("sneakerId");
 
     if (!updatedQuantity) {
-      res.status(404).json({ error: 'Sneaker not found.' });
-    } 
+      res.status(404).json({ error: "Sneaker not found." });
+    }
 
     res.send(updatedQuantity);
   } catch (error) {
-    res.status(500).json({ error: 'Error to fetch the data.', error });
+    res.status(500).json({ error: "Error to fetch the data.", error });
   }
 });
 
 // API to delete a sneaker from cart
-app.delete('/sneakers/cart/delete/:cartId', async (req, res) =>{
-    try {
-        
-      const deleted = await Cart.findByIdAndDelete(req.params.cartId);
+app.delete("/sneakers/cart/delete/:cartId", async (req, res) => {
+  try {
+    const deleted = await Cart.findByIdAndDelete(req.params.cartId);
 
-      if (!deleted) {res.status(404).json({ error: "Sneaker not found." });}
-
-      return res.status(200).json({
-        _id: deleted._id,
-        deleted: true
-      })
-    
-    } catch (error) {
-        res.status(500).json({ error: 'Error deleting the sneaker from cart.', error });
+    if (!deleted) {
+      res.status(404).json({ error: "Sneaker not found." });
     }
-})
+
+    return res.status(200).json({
+      _id: deleted._id,
+      deleted: true,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Error deleting the sneaker from cart.", error });
+  }
+});
 
 // API to empty the cart
 const emptyCart = async (userId) => {
-  try{
-    const deleteAll = await Cart.deleteMany({ userId })
+  try {
+    const deleteAll = await Cart.deleteMany({ userId });
     return deleteAll;
-  } catch(error){
+  } catch (error) {
     throw error;
   }
-}
+};
 app.delete("/sneakers/cart/empty/:userId", async (req, res) => {
-  try{
-
+  try {
     const deleteAll = await emptyCart(req.params.userId);
 
-    if(deleteAll.deletedCount > 0){
-      res.status(200).json({message: "Deleted all sneakers from the cart."})
+    if (deleteAll.deletedCount > 0) {
+      res.status(200).json({ message: "Deleted all sneakers from the cart." });
     } else {
-      res.status(404).json({message: "No sneakers found in the cart."})
+      res.status(404).json({ message: "No sneakers found in the cart." });
     }
-
-  } catch(error){
-    res.status(500).json({error: "Error deleting the sneakers from the cart", error})
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Error deleting the sneakers from the cart", error });
   }
-})
+});
 
 // API to decrement the sneakers quantity
 app.post("/sneakers/cart/decrement/:sneakerId", async (req, res) => {
-    try {
-        const { quantity } = req.body;
+  try {
+    const { quantity } = req.body;
 
-        const decrementedQuantity = await Cart.findByIdAndUpdate(
-            req.params.sneakerId,
-            { quantity: quantity - 1 },
-            { new: true }
-        ).populate('sneakerId');
+    const decrementedQuantity = await Cart.findByIdAndUpdate(
+      req.params.sneakerId,
+      { quantity: quantity - 1 },
+      { new: true },
+    ).populate("sneakerId");
 
-        if(decrementedQuantity){
-          res.send(decrementedQuantity);
-        } else {
-          res.status(404).json({ error: 'Sneaker not found.' });
-        }
-        
-    } catch (error) {
-        console.log("Failed to decement the quantity", error);
-        
+    if (decrementedQuantity) {
+      res.send(decrementedQuantity);
+    } else {
+      res.status(404).json({ error: "Sneaker not found." });
     }
-})
+  } catch (error) {
+    console.log("Failed to decement the quantity", error);
+  }
+});
 // API to read all the profiles.
 const readAllProfile = async () => {
   try {
@@ -414,17 +414,17 @@ const readAllProfile = async () => {
   }
 };
 
-app.get('/profile', async (req, res) => {
+app.get("/profile", async (req, res) => {
   try {
     const allProfiles = await readAllProfile();
 
     if (allProfiles.length != 0) {
       res.send(allProfiles);
     } else {
-      res.status(404).json({ error: 'Profile not found' });
+      res.status(404).json({ error: "Profile not found" });
     }
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch the data', error });
+    res.status(500).json({ error: "Failed to fetch the data", error });
   }
 });
 
@@ -437,21 +437,23 @@ const addNewAddress = async (address) => {
   } catch (error) {
     throw error;
   }
-}
+};
 
-app.post("/address", async(req, res) => {
+app.post("/address", async (req, res) => {
   try {
     const newAddress = await addNewAddress(req.body);
 
-    if(newAddress){
-      res.status(200).json({ message: "Address added successfully", newAddress });
+    if (newAddress) {
+      res
+        .status(200)
+        .json({ message: "Address added successfully", newAddress });
     } else {
-      res.status(500).json({ error: "Error adding the address" }); 
+      res.status(500).json({ error: "Error adding the address" });
     }
   } catch (error) {
     res.status(500).json({ error: "Error adding the address", error });
   }
-})
+});
 
 // API to read all addresses
 const readAllAddresses = async () => {
@@ -463,11 +465,11 @@ const readAllAddresses = async () => {
   }
 };
 
-app.get("/address", async(req, res) => {
+app.get("/address", async (req, res) => {
   try {
     const addAddresses = await readAllAddresses();
 
-    if(addAddresses.length != 0){
+    if (addAddresses.length != 0) {
       res.send(addAddresses);
     } else {
       res.status(404).json({ error: "No address found." });
@@ -475,9 +477,9 @@ app.get("/address", async(req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch the data.", error });
   }
-})
+});
 
-// api to edit the address 
+// api to edit the address
 app.patch("/address/edit/:addressId", async (req, res) => {
   try {
     const { addressId } = req.params;
@@ -499,7 +501,7 @@ app.patch("/address/edit/:addressId", async (req, res) => {
     const addressToUpdate = await Address.findByIdAndUpdate(
       addressId,
       updatedAddress,
-      { new: true }
+      { new: true },
     );
 
     if (!addressToUpdate) {
@@ -518,76 +520,81 @@ app.patch("/address/edit/:addressId", async (req, res) => {
   }
 });
 
-
 //api to delete the address
 const deleteAddressById = async (addressId) => {
   try {
     const deleteAddress = await Address.findByIdAndDelete(addressId);
     return deleteAddress;
-  }catch(error){
+  } catch (error) {
     throw error;
   }
 };
 
 app.delete("/address/delete/:addressId", async (req, res) => {
-  try{
+  try {
     const deletedAddress = await deleteAddressById(req.params.addressId);
-    if(deletedAddress){
-      res.status(200).json({message: "Address deleted successfully", deletedAddress });
+    if (deletedAddress) {
+      res
+        .status(200)
+        .json({ message: "Address deleted successfully", deletedAddress });
     } else {
-      res.status(404).json({error: "Address not found."})
+      res.status(404).json({ error: "Address not found." });
     }
-  } catch(error){
-    res.status(500).json({error: "Error deleting the address.", error})
+  } catch (error) {
+    res.status(500).json({ error: "Error deleting the address.", error });
   }
-})
+});
 
-// API to place a order 
+// API to place a order
 const placeOrder = async (orderDetails) => {
-  try{
+  try {
     const order = new Order(orderDetails);
     const savedOrder = await order.save();
     return savedOrder;
-  }catch(error){
+  } catch (error) {
     throw error;
   }
-}
+};
 
-app.post("/sneakers/order", async(req, res) => {
-  try{
+app.post("/sneakers/order", async (req, res) => {
+  try {
     const newOrder = await placeOrder(req.body);
-    if(newOrder){
+    if (newOrder) {
       res.status(200).json({ message: "Order placed successfully", newOrder });
-    } 
-  }catch(error){
-    res.status(500).json({error: "Error placing the order.", error})
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Error placing the order.", error });
   }
-})
+});
 
 // API to read all orders
-const readAllOrders = async() => {
-  try{
-    const allOrders = await Order.find().populate("userId").populate("addressId").populate("items.sneakerId").sort({ createdAt: -1 });;
+const readAllOrders = async () => {
+  try {
+    const allOrders = await Order.find()
+      .populate("userId")
+      .populate("addressId")
+      .populate("items.sneakerId")
+      .sort({ createdAt: -1 });
     console.log(allOrders);
     return allOrders;
-  }catch(error){
+  } catch (error) {
     throw error;
   }
-}
-app.get("/order", async(req, res) => {
+};
+app.get("/order", async (req, res) => {
   try {
     const allOrders = await readAllOrders();
-    if(allOrders.length != 0) {
-      res.send(allOrders)
+    if (allOrders.length != 0) {
+      res.send(allOrders);
     } else {
-      res.status(404).json({error: "No orders found"})
+      res.status(404).json({ error: "No orders found" });
     }
-  }catch(error){
-    res.status(500).json({error: "Failed to fetch the data", error})
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch the data", error });
   }
-})
+});
 
 const PORT = 3000;
 app.listen(PORT, () => {
-  console.log('Server is running on the PORT:', PORT);
+  console.log("Server is running on the PORT:", PORT);
 });
