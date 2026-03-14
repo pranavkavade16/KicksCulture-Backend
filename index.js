@@ -8,7 +8,7 @@ const Cart = require('./model/cart.model');
 const Wishlist = require('./model/wishlist.model');
 const Address = require('./model/address.model');
 const Order = require('./model/order.model');
-const { chatbotRoute } = require('./chatbotRoute');
+const chatbotRoute  = require('./chatbotRoute');
 
 const cors = require('cors');
 
@@ -31,7 +31,17 @@ app.get('/', (req, res) => {
 
 // API to add the data.
 
-// chatbotRoute(app);
+function chatbotRoute(app) {
+  app.post("/chatbot", async (req, res) => {
+    try {
+      const response = await axios.post(API_URL, {...});
+      res.json(response.data);
+    } catch (error) {
+      console.error("Chatbot error:", error);
+      res.status(500).json({ error: "Chatbot failed" });
+    }
+  });
+}
 
 const addNewSneaker = async (sneaker) => {
   try {

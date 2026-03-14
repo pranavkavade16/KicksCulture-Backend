@@ -7,7 +7,7 @@ const RECOMMENDATION_KEYWORDS = [
   "buy", "purchase", "want", "need", "options",
   "under ₹", "budget", "affordable", "cheap", "expensive",
   "new arrival", "new arrivals", "latest",
-  // exact brands from your schema enum
+  // exact brands from schema enum
   "nike", "adidas", "jordan", "new balance", "puma", "converse", "asics", "reebok",
   // categories / gender
   "running", "casual", "gym", "streetwear",
