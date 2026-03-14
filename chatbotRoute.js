@@ -6,7 +6,7 @@ const { fetchRelevantSneakers, fetchUserOrders } = require("./ragFetcher");
 const { buildPrompt }           = require("./promptBuilder");
 
 const API_URL = "https://openrouter.ai/api/v1/chat/completions";
-const MODEL   = process.env.OPENROUTER_MODEL || "nvidia/llama-nemotron-embed-vl-1b-v2:free";
+const MODEL   = process.env.OPENROUTER_MODEL || "nvidia/nemotron-3-super-120b-a12b:free";
 const API_KEY = process.env.API_KEY;
 
 
