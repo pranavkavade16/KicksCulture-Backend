@@ -4,8 +4,7 @@ const { fetchRelevantSneakers, fetchUserOrders } = require("./ragFetcher");
 const { buildPrompt } = require("./promptBuilder");
 
 const API_URL = "https://openrouter.ai/api/v1/chat/completions";
-const MODEL =
-  process.env.OPENROUTER_MODEL || "liquid/lfm-2.5-1.2b-thinking:free";
+const MODEL = process.env.OPENROUTER_MODEL || "openrouter/hunter-alpha";
 const API_KEY = process.env.API_KEY;
 
 function parseAIResponse(raw) {
