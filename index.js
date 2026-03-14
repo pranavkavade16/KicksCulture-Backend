@@ -8,7 +8,7 @@ const Cart = require("./model/cart.model");
 const Wishlist = require("./model/wishlist.model");
 const Address = require("./model/address.model");
 const Order = require("./model/order.model");
-const chatbotRoute = require("./chatbotRoute");
+const { chatbotRoute } = require("./chatbotRoute");
 
 const cors = require("cors");
 
@@ -193,20 +193,16 @@ app.post("/sneakers/wishlist", async (req, res) => {
     const sneakerInWishlist = await addSneakerInWishlist(userId, sneakerId);
 
     if (sneakerInWishlist.existed) {
-      return res
-        .status(200)
-        .json({
-          message: "Sneaker already in wishlist.",
-          data: sneakerInWishlist.data,
-        });
+      return res.status(200).json({
+        message: "Sneaker already in wishlist.",
+        data: sneakerInWishlist.data,
+      });
     }
 
-    return res
-      .status(200)
-      .json({
-        message: "Sneaker added to the wishlist successfully.",
-        newSneaker: sneakerInWishlist.data,
-      });
+    return res.status(200).json({
+      message: "Sneaker added to the wishlist successfully.",
+      newSneaker: sneakerInWishlist.data,
+    });
   } catch (error) {
     res
       .status(500)
