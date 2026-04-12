@@ -2,6 +2,7 @@ const axios = require("axios");
 const { detectIntent } = require("./intentDetector");
 const { fetchRelevantSneakers, fetchUserOrders } = require("./ragFetcher");
 const { buildPrompt } = require("./promptBuilder");
+const Groq = require("groq-sdk");
 
 const API_URL = "https://openrouter.ai/api/v1/chat/completions";
 const MODEL = process.env.OPENROUTER_MODEL || "openrouter/hunter-alpha";
@@ -83,28 +84,45 @@ function chatbotRoute(app) {
       // ── STEP 3: Build prompt with real data injected ────────────────────────
       const systemPrompt = buildPrompt(intent, sneakers, orders);
 
-      // ── STEP 4: Call OpenRouter ─────────────────────────────────────────────
-      const response = await axios.post(
-        API_URL,
-        {
-          model: MODEL,
-          temperature: 0,
-          messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: message },
-          ],
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${API_KEY}`,
-            "Content-Type": "application/json",
-            "HTTP-Referer": "http://localhost:3000",
-            "X-Title": "KicksCulture AI Assistant",
-          },
-        },
-      );
+      const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-      const aiReply = response.data.choices[0].message.content;
+      const response = await groq.chat.completions.create({
+        model: "llama-3.3-70b-versatile",
+        temperature: 0.3,
+        max_tokens: 1500,
+        messages: [
+          {
+            role: "system",
+            content: systemPrompt,
+          },
+          {
+            role: "user",
+            content: message,
+          },
+        ],
+      });
+      // ── STEP 4: Call OpenRouter ─────────────────────────────────────────────
+      // const response = await axios.post(
+      //   API_URL,
+      //   {
+      //     model: MODEL,
+      //     temperature: 0,
+      //     messages: [
+      //       { role: "system", content: systemPrompt },
+      //       { role: "user", content: message },
+      //     ],
+      //   },
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${API_KEY}`,
+      //       "Content-Type": "application/json",
+      //       "HTTP-Referer": "http://localhost:3000",
+      //       "X-Title": "KicksCulture AI Assistant",
+      //     },
+      //   },
+      // );
+
+      const aiReply = response.choices[0]?.message?.content || "";
 
       // ── STEP 5: Parse JSON ──────────────────────────────────────────────────
       let parsed = parseAIResponse(aiReply);
