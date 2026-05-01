@@ -10,6 +10,10 @@ const Address = require("./model/address.model");
 const Order = require("./model/order.model");
 const { chatbotRoute } = require("./chatbotRoute");
 
+const validator = require("validator");
+const bcrypt = require("bcrypt");
+const generateToken = require("./utils/generateToken");
+
 const cors = require("cors");
 
 const corsOptions = {
@@ -26,6 +30,87 @@ initializeDatabase();
 
 app.get("/", (req, res) => {
   res.send("Sneakers API");
+});
+
+//API to sign up
+app.post("/auth/signup", async (req, res) => {
+  try {
+    const { firstName, lastName, mobileNumber, email, password } = req.body;
+
+    if (!firstName || !lastName || !mobileNumber || !email || !password) {
+      return res
+        .status(400)
+        .json({ success: false, error: "All fields are required" });
+    }
+    if (password.length < 8) {
+      return res.status(400).json({
+        success: false,
+        error: "Password must be at least 8 characters",
+      });
+    }
+
+    // Duplicate email check
+    const existing = await Profile.findOne({ email });
+    if (existing) {
+      return res
+        .status(409)
+        .json({ success: false, error: "Email already registered" });
+    }
+
+    // Hash + persist
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await Profile.create({
+      firstName,
+      lastName,
+      mobileNumber,
+      email,
+      password: hashedPassword,
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: "User registered successfully",
+      userId: user._id,
+    });
+  } catch (err) {
+    console.error("Signup error:", err);
+    return res
+      .status(500)
+      .json({ success: false, error: "Internal server error" });
+  }
+});
+
+// API to login into the web app
+app.post("/auth/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await Profile.findOne({ email });
+
+    if (!user) {
+      return res.status(401).json({
+        message: "Invalid credentials",
+      });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(401).json({
+        message: "Invalid credentials",
+      });
+    }
+    const token = generateToken({
+      id: user._id,
+      email: user.email,
+    });
+
+    res.status(200).json({ token, user });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
 });
 
 // API to add the data.
